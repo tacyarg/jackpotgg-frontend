@@ -1,4 +1,4 @@
-# jackpotgg-2
+# Jackpot.GG
 
 ## Project setup
 ```
