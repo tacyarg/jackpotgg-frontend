@@ -1,0 +1,62 @@
+build-master:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
+    - docker push "$CI_REGISTRY_IMAGE"
+  only:
+    - master
+
+build:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+  except:
+    - master
+
+# deploy-keytrade:   
+#   stage: deploy
+#   image: ubuntu:latest
+#   before_script:
+#     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+#     - mkdir -p ~/.ssh
+#     - echo -e "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+#     - chmod 600 ~/.ssh/id_rsa
+#     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+#   script:
+#     - ssh root@$STAGING_SERVER_IP "docker pull repo.tacyarg.com:8443/vunbox/vunbox-backend:keytrade"
+#     - ssh root@$STAGING_SERVER_IP "docker stop flipaskin-backend && docker rm flipaskin-backend"
+#     - ssh root@$STAGING_SERVER_IP "docker run --name flipaskin-backend --env-file=.env-flipaskin -p 5000:3000 -p 5001:3001 -d repo.tacyarg.com:8443/vunbox/vunbox-backend:keytrade npm start"
+#   environment:
+#     name: staging
+#   only:
+#     - keytrade
+
+# deploy-master:   
+#   stage: deploy   
+#   image: ubuntu:latest
+#   before_script:
+#     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+#     - mkdir -p ~/.ssh
+#     - echo -e "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+#     - chmod 600 ~/.ssh/id_rsa
+#     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+#   script:
+#     - ssh root@$STAGING_SERVER_IP "docker pull repo.tacyarg.com:8443/vunbox/vunbox-backend"
+#     - ssh root@$STAGING_SERVER_IP "docker stop vunbox-backend && docker rm vunbox-backend"
+#     - ssh root@$STAGING_SERVER_IP "docker run --name vunbox-backend --env-file=.env -p 3000:3000 -p 3001:3001 -d repo.tacyarg.com:8443/vunbox/vunbox-backend:latest npm start"
+#   environment:
+#     name: staging
+#   only:
+#     - master
+#   # when: manual
