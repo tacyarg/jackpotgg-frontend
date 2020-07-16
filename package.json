@@ -14,7 +14,7 @@
     "chart.js": "^2.7.3",
     "chipsgg-client": "^1.2.0",
     "dayjs": "^1.7.7",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "statesync": "^0.2.5",
     "vue": "^2.5.17",
     "vue-chartjs": "^3.4.0",
