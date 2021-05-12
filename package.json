@@ -11,7 +11,7 @@
     "deletemaps": "find . -type f -name *.map -delete"
   },
   "dependencies": {
-    "chart.js": "^2.7.3",
+    "chart.js": "^2.9.4",
     "chipsgg-client": "^1.2.0",
     "dayjs": "^1.7.7",
     "lodash": "^4.17.11",
